@@ -1,8 +1,9 @@
 import jss from 'jss';
+import {render as renderControls} from './controls';
 
 const getRandomColor = () => `#${Math.floor(Math.random() * 0x1000000).toString(16)}`;
 
-const changes = new Array(1e6).fill(null).map(getRandomColor);
+const changes = new Array(1e5).fill(null).map(getRandomColor);
 
 const createStyles = amount =>
   new Array(amount).fill(null).reduce(
@@ -29,13 +30,20 @@ const createElements = classNames =>
 
 const animate = sheet => {
   let stop;
+  let index = 0;
+
+  const next = () => {
+    const change = changes[index];
+    if (changes.length > index) index++;
+    else index = 0;
+    return change;
+  };
 
   (function run() {
     for (const name in sheet.classes) {
-      if (changes.length === 0) break;
-      sheet.getRule(name).prop('background', changes.pop());
+      sheet.getRule(name).prop('background-color', next());
     }
-    if (!stop && changes.length !== 0) requestAnimationFrame(run);
+    if (!stop) requestAnimationFrame(run);
   })();
 
   return () => {
@@ -58,27 +66,4 @@ const renderObjects = amount => {
   };
 };
 
-const renderControls = () => {
-  let remove;
-  let amount = 100;
-
-  const buttonRender = document.createElement('button');
-  buttonRender.innerText = `Render ${amount}`;
-  buttonRender.onclick = () => {
-    if (remove) remove();
-    remove = renderObjects(amount);
-    amount += 100;
-    buttonRender.innerText = `Render ${amount}`;
-  };
-  document.body.appendChild(buttonRender);
-
-  const buttonClear = document.createElement('button');
-  buttonClear.innerText = 'Clear';
-  buttonClear.onclick = () => {
-    remove();
-    remove = null;
-  };
-  document.body.appendChild(buttonClear);
-};
-
-renderControls();
+renderControls(renderObjects);
