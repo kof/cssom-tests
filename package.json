@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "build": "webpack src/index.js -o dist/bundle.js --mode=development --module-bind js=babel-loader --devtool=source-map"
+    "build": "webpack"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "immutable": "^3.8.2",
-    "jss": "^9.8.7"
+    "jss": "^9.8.7",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
